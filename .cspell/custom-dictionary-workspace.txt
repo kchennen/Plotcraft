@@ -1,3 +1,5 @@
 # Custom Dictionary Words
 Chennen
 Kirsley
+Plotcraft
+tidyplot
