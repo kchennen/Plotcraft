@@ -27,6 +27,11 @@ class PlotCraft:
         """Initialize with a PlotSpec."""
         self._spec = spec
 
+    @property
+    def spec(self) -> PlotSpec:
+        """The underlying PlotSpec (read-only introspection)."""
+        return self._spec
+
     # --- Internal helpers ---
     def _evolve(self, **changes: Any) -> PlotCraft:  # noqa: ANN401
         """Create a new PlotCraft with updated spec fields."""
@@ -78,11 +83,10 @@ class PlotCraft:
         """
         if isinstance(colors, ColorScheme):
             return self._evolve(color_scheme=colors)
-        elif isinstance(colors, dict):
+        if isinstance(colors, dict):
             return self._evolve(color_map_override=colors)
-        elif isinstance(colors, list):
-            return self._evolve(color_scheme=ColorScheme.from_hex_list(colors))
-        raise TypeError(f"Expected ColorScheme, list, or dict, got {type(colors).__name__}")
+        # At this point the type is narrowed to list[str] — no isinstance check needed.
+        return self._evolve(color_scheme=ColorScheme.from_hex_list(colors))
 
     def adjust_size(
         self,
