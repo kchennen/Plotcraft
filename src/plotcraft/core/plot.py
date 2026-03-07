@@ -94,9 +94,7 @@ class PlotCraft:
         # callers get a clear TypeError rather than an opaque error from from_hex_list.
         if isinstance(colors, list):  # pyright: ignore[reportUnnecessaryIsinstance]
             return self._evolve(color_scheme=ColorScheme.from_hex_list(colors))
-        raise TypeError(
-            f"Expected ColorScheme, list[str], or dict[str, str], got {type(colors).__name__}"
-        )
+        raise TypeError(f"Expected ColorScheme, list[str], or dict[str, str], got {type(colors).__name__}")
 
     def adjust_size(
         self,
