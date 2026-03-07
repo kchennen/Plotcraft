@@ -63,3 +63,24 @@ class TestPlotCraftAPI:
         p = pc.plotcraft(gene_response_df, x="gene", y="expression").add_data_points().add_title("T")
         assert "add_data_points" in p.spec.history
         assert "add_title" in p.spec.history
+
+
+class TestPlotCraftStyling:
+    """Verify size and axis-title adjust/remove methods."""
+
+    def test_adjust_size_mm(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() stores width and height in millimetres when units='mm'."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression").adjust_size(width=100, height=60)
+        assert p.spec.width_mm == 100.0
+        assert p.spec.height_mm == 60.0
+
+    def test_adjust_size_inches(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() converts inches to mm (1 in = 25.4 mm)."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression").adjust_size(width=3.0, units="in")
+        assert abs(p.spec.width_mm - 76.2) < 0.01
+
+    def test_remove_axis_titles(self, gene_response_df: pl.DataFrame) -> None:
+        """remove_x/y_axis_title() sets the corresponding title to an empty string."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression").remove_x_axis_title().remove_y_axis_title()
+        assert p.spec.x_title == ""
+        assert p.spec.y_title == ""

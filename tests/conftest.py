@@ -6,11 +6,7 @@ import pytest
 
 @pytest.fixture
 def gene_response_df() -> pl.DataFrame:
-    """A 24-row synthetic drug response study dataset.
-
-    Returns:
-        A Polars DataFrame with gene, expression, treatment, and replicate columns.
-    """
+    """A 24-row synthetic drug response study dataset."""
     return pl.DataFrame(
         {
             "gene": ["BRCA1"] * 8 + ["TP53"] * 8 + ["EGFR"] * 8,
@@ -42,5 +38,28 @@ def gene_response_df() -> pl.DataFrame:
             ],
             "treatment": (["control"] * 4 + ["treated"] * 4) * 3,
             "replicate": [1, 2, 3, 4] * 6,
+        }
+    )
+
+
+@pytest.fixture
+def sample_df() -> pl.DataFrame:
+    """A small DataFrame suitable for scatter, bar, and grouped plots."""
+    return pl.DataFrame(
+        {
+            "group": ["A", "A", "A", "B", "B", "B", "C", "C", "C"],
+            "value": [4.2, 3.8, 4.5, 6.1, 5.9, 6.3, 5.0, 5.2, 4.8],
+            "treatment": ["ctrl", "ctrl", "ctrl", "drug", "drug", "drug", "ctrl", "ctrl", "ctrl"],
+        }
+    )
+
+
+@pytest.fixture
+def simple_df() -> pl.DataFrame:
+    """Minimal 2-column DataFrame."""
+    return pl.DataFrame(
+        {
+            "x": [1, 2, 3, 4, 5],
+            "y": [2, 4, 1, 5, 3],
         }
     )

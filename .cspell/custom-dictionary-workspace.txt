@@ -26,9 +26,11 @@ ipynb
 ipython
 Kirsley
 labelsize
+linestyle
 marimo
 Marimo
 matplotlib
+millimetres
 mkdocs
 mkdocstrings
 mypy
