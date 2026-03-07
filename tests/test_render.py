@@ -59,3 +59,35 @@ class TestRenderEngine:
         _handles, labels = ax.get_legend_handles_labels()
         assert set(labels) == {"control", "treated"}
         plt.close(fig)
+
+    def test_categorical_xaxis_tick_positions(self, scatter_spec: PlotSpec):
+        """Categorical x column maps to contiguous integer tick positions."""
+        import matplotlib.pyplot as plt
+
+        engine = RenderEngine()
+        fig, ax = engine.render(scatter_spec)
+        # Polars .unique().sort() gives alphabetical order:
+        # BRCA1 → 0, EGFR → 1, TP53 → 2
+        assert list(ax.get_xticks()) == [0, 1, 2]
+        plt.close(fig)
+
+    def test_categorical_xaxis_tick_labels(self, scatter_spec: PlotSpec):
+        """Categorical x-axis labels match the sorted unique category values."""
+        import matplotlib.pyplot as plt
+
+        engine = RenderEngine()
+        fig, ax = engine.render(scatter_spec)
+        labels = [t.get_text() for t in ax.get_xticklabels()]
+        assert labels == ["BRCA1", "EGFR", "TP53"]
+        plt.close(fig)
+
+    def test_categorical_xaxis_horizontal_margin(self, scatter_spec: PlotSpec):
+        """Categorical x-axis applies 0.15 horizontal margin for breathing room."""
+        import matplotlib.pyplot as plt
+        import pytest
+
+        engine = RenderEngine()
+        fig, ax = engine.render(scatter_spec)
+        x_margin, _ = ax.margins()
+        assert x_margin == pytest.approx(0.15)
+        plt.close(fig)
