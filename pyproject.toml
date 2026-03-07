@@ -1,0 +1,56 @@
+[project]
+name = "plotcraft"
+version = "0.1.0"
+description = "Crafting publication-ready statistical graphics in Python"
+readme = "README.md"
+authors = [
+    { name = "KChennen", email = "kchennen@unistra.fr" }
+]
+license = { text = "Apache-2.0" }
+requires-python = ">=3.13"
+dependencies = [
+    "matplotlib>=3.10.8",
+    "polars>=1.38.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.26,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.151.9",
+    "mypy>=1.19.1",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "pytest-mpl>=0.18.0",
+    "ruff>=0.15.5",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/plotcraft"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "ANN", "D", "RUF"]
+ignore = ["ANN101", "ANN102", "D100", "D104"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers -v"
+markers = [
+    "mpl_image_compare: visual regression test",
+    "slow: marks tests as slow",
+]
