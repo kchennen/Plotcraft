@@ -29,7 +29,12 @@ class PlotCraft:
 
     @property
     def spec(self) -> PlotSpec:
-        """The underlying PlotSpec (read-only introspection)."""
+        """The underlying PlotSpec (safe read-only introspection).
+
+        ``PlotSpec`` is a ``frozen=True`` dataclass, so callers cannot
+        mutate it — any attempt to set an attribute raises ``FrozenInstanceError``.
+        No defensive copy is needed.
+        """
         return self._spec
 
     # --- Internal helpers ---
@@ -85,8 +90,13 @@ class PlotCraft:
             return self._evolve(color_scheme=colors)
         if isinstance(colors, dict):
             return self._evolve(color_map_override=colors)
-        # At this point the type is narrowed to list[str] — no isinstance check needed.
-        return self._evolve(color_scheme=ColorScheme.from_hex_list(colors))
+        # pyright: ignore[reportUnnecessaryIsinstance] — explicit guard kept so
+        # callers get a clear TypeError rather than an opaque error from from_hex_list.
+        if isinstance(colors, list):  # pyright: ignore[reportUnnecessaryIsinstance]
+            return self._evolve(color_scheme=ColorScheme.from_hex_list(colors))
+        raise TypeError(
+            f"Expected ColorScheme, list[str], or dict[str, str], got {type(colors).__name__}"
+        )
 
     def adjust_size(
         self,
