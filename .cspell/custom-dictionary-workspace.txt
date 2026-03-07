@@ -14,10 +14,14 @@ Cython
 dmypy
 EGFR
 envrc
+facecolor
+fontfamily
+fontsize
 htmlcov
 ipynb
 ipython
 Kirsley
+labelsize
 marimo
 Marimo
 matplotlib
@@ -28,6 +32,7 @@ nosetests
 pipenv
 Pipfile
 Plotcraft
+plotspec
 pybuilder
 pycache
 pydocstyle
@@ -50,3 +55,5 @@ testpaths
 tidyplot
 venv
 webassets
+xticklabels
+yticklabels
