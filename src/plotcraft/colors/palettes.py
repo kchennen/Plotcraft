@@ -80,11 +80,16 @@ class ColorScheme:
         """Create a ColorScheme from a list of hex strings.
 
         Args:
-            colors: List of hex color strings.
+            colors: List of hex color strings.  Must be non-empty.
 
         Returns:
             A new ColorScheme with the given colors.
+
+        Raises:
+            ValueError: If ``colors`` is empty.
         """
+        if not colors:
+            raise ValueError("colors must be non-empty")
         return ColorScheme(name="custom", colors=tuple(colors))
 
 
@@ -101,10 +106,15 @@ def new_color_scheme(
 
     Args:
         name: A descriptive name for the scheme.
-        colors: List of hex color strings (anchor colors).
+        colors: List of hex color strings (anchor colors).  Must be non-empty.
         palette_type: One of "discrete", "continuous", "diverging".
 
     Returns:
         A new ColorScheme instance.
+
+    Raises:
+        ValueError: If ``colors`` is empty.
     """
+    if not colors:
+        raise ValueError("colors must be non-empty")
     return ColorScheme(name=name, colors=tuple(colors), palette_type=palette_type)

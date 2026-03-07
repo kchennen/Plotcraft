@@ -96,6 +96,11 @@ class TestInterpolateColors:
         assert len(result) == 1
         assert result[0].lower() == "#ff0000"
 
+    def test_empty_colors_raises(self) -> None:
+        """Passing an empty colors tuple raises ValueError with a clear message."""
+        with pytest.raises(ValueError, match="non-empty"):
+            interpolate_colors((), 3)
+
 
 class TestApplySaturation:
     """Test saturation adjustment."""
@@ -115,6 +120,16 @@ class TestApplySaturation:
         r, g, b = mcolors.to_rgb(result)
         assert abs(r - g) < 0.02
         assert abs(g - b) < 0.02
+
+    def test_boost_clamps_at_one(self) -> None:
+        """Saturation > 1.0 boosts saturation but it is always capped at 1.0 (max HSV)."""
+        import matplotlib.colors as mcolors
+
+        # Use a partially saturated colour so boosting has room to work
+        result = apply_saturation("#888844", 5.0)  # very high multiplier
+        r, g, b = mcolors.to_rgb(result)
+        _h, s, _v = __import__("colorsys").rgb_to_hsv(r, g, b)
+        assert s <= 1.0 + 1e-9  # must not exceed the HSV maximum
 
 
 class TestColorSchemeGetColors:
@@ -204,6 +219,16 @@ class TestNewColorScheme:
         """new_color_scheme() respects an explicit palette_type argument."""
         s = new_color_scheme("grad", ["#000", "#FFF"], palette_type="continuous")
         assert s.palette_type == "continuous"
+
+    def test_empty_colors_raises(self) -> None:
+        """new_color_scheme() raises ValueError when colors is empty."""
+        with pytest.raises(ValueError, match="non-empty"):
+            new_color_scheme("bad", [])
+
+    def test_from_hex_list_empty_raises(self) -> None:
+        """ColorScheme.from_hex_list() raises ValueError when colors is empty."""
+        with pytest.raises(ValueError, match="non-empty"):
+            ColorScheme.from_hex_list([])
 
 
 class TestPaletteInventory:
