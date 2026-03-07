@@ -88,6 +88,8 @@ class TestRenderEngine:
 
         engine = RenderEngine()
         fig, ax = engine.render(scatter_spec)
-        x_margin, _ = ax.margins()
+        margins = ax.margins()
+        assert margins is not None, "ax.margins() returned None"
+        x_margin = float(margins[0])  # float() resolves the Unknown stub type
         assert x_margin == pytest.approx(0.15)
         plt.close(fig)
