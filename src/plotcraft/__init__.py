@@ -32,7 +32,6 @@ def plotcraft(
     """Create a new plot from data and aesthetic mappings.
 
     This is the entry point for every Plotcraft visualization.
-    Mirrors tidyplots' tidyplot() function.
 
     Args:
         data: A Polars or pandas DataFrame.

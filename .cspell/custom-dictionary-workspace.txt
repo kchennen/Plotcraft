@@ -12,6 +12,7 @@ cursorindexingignore
 cython
 Cython
 dmypy
+Dunder
 EGFR
 envrc
 facecolor

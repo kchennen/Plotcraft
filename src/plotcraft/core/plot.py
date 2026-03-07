@@ -86,15 +86,15 @@ class PlotCraft:
             colors: A ColorScheme, list of hex strings, or dict mapping
                     category names to hex colors.
         """
-        if isinstance(colors, ColorScheme):
-            return self._evolve(color_scheme=colors)
-        if isinstance(colors, dict):
-            return self._evolve(color_map_override=colors)
-        # pyright: ignore[reportUnnecessaryIsinstance] — explicit guard kept so
-        # callers get a clear TypeError rather than an opaque error from from_hex_list.
-        if isinstance(colors, list):  # pyright: ignore[reportUnnecessaryIsinstance]
-            return self._evolve(color_scheme=ColorScheme.from_hex_list(colors))
-        raise TypeError(f"Expected ColorScheme, list[str], or dict[str, str], got {type(colors).__name__}")
+        match colors:
+            case ColorScheme():
+                return self._evolve(color_scheme=colors)
+            case dict():
+                return self._evolve(color_map_override=colors)
+            case list():
+                return self._evolve(color_scheme=ColorScheme.from_hex_list(colors))
+            case _:
+                raise TypeError(f"Expected ColorScheme, list[str], or dict[str, str], got {type(colors).__name__}")
 
     def adjust_size(
         self,
