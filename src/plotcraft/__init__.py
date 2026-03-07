@@ -54,6 +54,7 @@ from plotcraft.core.aes import Aes
 from plotcraft.core.options import get_options
 from plotcraft.core.plot import PlotCraft
 from plotcraft.core.spec import PlotSpec
+from plotcraft.data import list_datasets, load_dataset
 from plotcraft.themes.base import THEME_PLOTCRAFT, Theme
 
 
@@ -166,6 +167,8 @@ __all__ = [
     "colors_journal_nejm",
     "colors_journal_npg",
     "ensure_polars",
+    "list_datasets",
+    "load_dataset",
     "new_color_scheme",
     "plotcraft",
 ]

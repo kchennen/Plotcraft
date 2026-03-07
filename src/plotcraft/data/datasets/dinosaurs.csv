@@ -1,0 +1,16 @@
+species,length_m,weight_kg,period,diet
+Tyrannosaurus,12.3,8400,Cretaceous,carnivore
+Triceratops,9.0,6800,Cretaceous,herbivore
+Velociraptor,2.0,15,Cretaceous,carnivore
+Stegosaurus,9.0,5000,Jurassic,herbivore
+Brachiosaurus,26.0,56000,Jurassic,herbivore
+Ankylosaurus,6.5,4800,Cretaceous,herbivore
+Diplodocus,27.0,16000,Jurassic,herbivore
+Allosaurus,8.5,2300,Jurassic,carnivore
+Parasaurolophus,10.0,2500,Cretaceous,herbivore
+Spinosaurus,15.0,7400,Cretaceous,carnivore
+Apatosaurus,22.0,23000,Jurassic,herbivore
+Pachycephalosaurus,4.5,450,Cretaceous,herbivore
+Compsognathus,1.0,3,Jurassic,carnivore
+Iguanodon,10.0,3400,Cretaceous,herbivore
+Archaeopteryx,0.5,1,Jurassic,carnivore
