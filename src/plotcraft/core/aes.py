@@ -26,12 +26,23 @@ class Aes:
     weight: str | None = None
 
     def merge(self, other: Aes) -> Aes:
-        """Merge with another Aes. Non-None fields from `other` win."""
+        """Merge with another Aes. Non-None fields from `other` win.
+
+        Args:
+            other: The override Aes whose non-None fields take precedence.
+
+        Returns:
+            A new Aes with merged fields.
+        """
         updates = {f.name: getattr(other, f.name) for f in fields(other) if getattr(other, f.name) is not None}
         return replace(self, **updates)
 
     def resolve_fill(self) -> Aes:
-        """Default fill to color if fill is unset."""
+        """Default fill to color if fill is unset.
+
+        Returns:
+            A new Aes with fill resolved.
+        """
         if self.fill is None and self.color is not None:
             return replace(self, fill=self.color)
         return self

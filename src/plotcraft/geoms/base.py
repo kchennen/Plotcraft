@@ -23,5 +23,13 @@ class Geom(ABC):
         scales: dict[str, Any],
         theme: Any,  # noqa: ANN401
     ) -> None:
-        """Draw this geometry onto the given matplotlib Axes."""
+        """Draw this geometry onto the given matplotlib Axes.
+
+        Args:
+            ax: The matplotlib Axes to draw on.
+            data: The data to visualize.
+            aes: The resolved aesthetic mapping.
+            scales: A dict of precomputed scale information (e.g. color_map).
+            theme: The active theme controlling visual style.
+        """
         ...

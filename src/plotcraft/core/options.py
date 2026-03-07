@@ -23,5 +23,9 @@ _OPTIONS = _GlobalOptions()
 
 
 def get_options() -> _GlobalOptions:
-    """Return the current global options (internal use)."""
+    """Return the current global options (internal use).
+
+    Returns:
+        The module-level _GlobalOptions singleton.
+    """
     return _OPTIONS

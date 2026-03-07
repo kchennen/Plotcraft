@@ -15,8 +15,11 @@ dmypy
 EGFR
 envrc
 facecolor
+figsize
 fontfamily
 fontsize
+fontweight
+frameon
 htmlcov
 ipynb
 ipython
@@ -55,5 +58,9 @@ testpaths
 tidyplot
 venv
 webassets
+xlabel
 xticklabels
+xticks
+ylabel
 yticklabels
+zorder

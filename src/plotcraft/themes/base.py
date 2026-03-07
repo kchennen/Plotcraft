@@ -33,7 +33,11 @@ class Theme:
     axis_labels_y: bool = True
 
     def apply(self, ax: Axes) -> None:
-        """Apply this theme to a matplotlib Axes."""
+        """Apply this theme to a matplotlib Axes.
+
+        Args:
+            ax: The matplotlib Axes to style.
+        """
         ink = self.ink_color
         ax.set_facecolor(self.paper_color)
 
@@ -47,11 +51,31 @@ class Theme:
             ax.spines["left"].set_visible(True)
             ax.spines["left"].set_color(ink)
 
-        # Grid
-        ax.grid(self.panel_grid_major, which="major", alpha=0.3)
+        # Spine linewidth
+        for spine in ax.spines.values():
+            spine.set_linewidth(0.6)
+
+        # Grid — subtle dashed lines, y-axis only
+        ax.grid(
+            self.panel_grid_major,
+            which="major",
+            axis="y",
+            linestyle="--",
+            linewidth=0.5,
+            alpha=0.3,
+        )
+
+        # Y-axis breathing room
+        ax.margins(y=0.05)
 
         # Tick styling
-        ax.tick_params(labelsize=self.base_size, colors=ink)
+        ax.tick_params(
+            labelsize=self.base_size,
+            colors=ink,
+            direction="out",
+            width=0.6,
+            length=3,
+        )
         if not self.axis_ticks_x:
             ax.tick_params(axis="x", length=0)
         if not self.axis_ticks_y:

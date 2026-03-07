@@ -1,23 +1,24 @@
-"""Base class for all statistical transformations."""
+"""StatIdentity — passthrough stat that returns data unchanged."""
 
 from __future__ import annotations
-
-from abc import ABC, abstractmethod
 
 import polars as pl
 
 from plotcraft.core.aes import Aes
+from plotcraft.stats.base import Stat
 
 
-class Stat(ABC):
-    """Abstract stat — transforms data before drawing."""
+class StatIdentity(Stat):
+    """No-op stat. Returns data as-is."""
 
-    @abstractmethod
     def compute(self, data: pl.DataFrame, aes: Aes) -> pl.DataFrame:
-        """Transform data. Returns a new DataFrame.
+        """Return data unchanged.
 
         Args:
             data: The input DataFrame to transform.
             aes: The resolved aesthetic mapping.
+
+        Returns:
+            The input DataFrame unmodified.
         """
-        ...
+        return data

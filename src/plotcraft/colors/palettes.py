@@ -15,7 +15,18 @@ class ColorScheme:
     palette_type: Literal["discrete", "continuous", "diverging"] = "discrete"
 
     def get_colors(self, n: int) -> list[str]:
-        """Return exactly n colors. Subsample or cycle as needed."""
+        """Get a list of n colors from the scheme.
+
+        For discrete schemes, this returns the first n colors (cycling if
+        n > available). For continuous/diverging schemes, this interpolates
+        across the colors to create a gradient.
+
+        Args:
+            n: The number of colors to return.
+
+        Returns:
+            A list of n hex color strings.
+        """
         if n <= 0:
             return []
         if n <= len(self.colors):
@@ -25,7 +36,14 @@ class ColorScheme:
 
     @staticmethod
     def from_hex_list(colors: list[str]) -> ColorScheme:
-        """Create a ColorScheme from a list of hex strings."""
+        """Create a ColorScheme from a list of hex strings.
+
+        Args:
+            colors: List of hex color strings.
+
+        Returns:
+            A new ColorScheme with the given colors.
+        """
         return ColorScheme(name="custom", colors=tuple(colors))
 
 
