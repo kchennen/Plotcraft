@@ -94,7 +94,8 @@ class RenderEngine:
         return {str(v): c for v, c in zip(unique_vals, colors)}
 
     def _build_category_map(
-        self, spec: PlotSpec,
+        self,
+        spec: PlotSpec,
     ) -> dict[str, int]:
         """Build a string→int mapping for categorical x-axis columns.
 
@@ -117,7 +118,9 @@ class RenderEngine:
         return {str(v): i for i, v in enumerate(categories)}
 
     def _apply_category_axis(
-        self, ax: Axes, x_cat_map: dict[str, int],
+        self,
+        ax: Axes,
+        x_cat_map: dict[str, int],
     ) -> None:
         """Set tick positions and labels for a categorical x-axis.
 
