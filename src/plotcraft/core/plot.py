@@ -27,6 +27,16 @@ class PlotCraft:
         """Initialize with a PlotSpec."""
         self._spec = spec
 
+    @property
+    def spec(self) -> PlotSpec:
+        """The underlying PlotSpec (safe read-only introspection).
+
+        ``PlotSpec`` is a ``frozen=True`` dataclass, so callers cannot
+        mutate it — any attempt to set an attribute raises ``FrozenInstanceError``.
+        No defensive copy is needed.
+        """
+        return self._spec
+
     # --- Internal helpers ---
     def _evolve(self, **changes: Any) -> PlotCraft:  # noqa: ANN401
         """Create a new PlotCraft with updated spec fields."""
@@ -78,11 +88,13 @@ class PlotCraft:
         """
         if isinstance(colors, ColorScheme):
             return self._evolve(color_scheme=colors)
-        elif isinstance(colors, dict):
+        if isinstance(colors, dict):
             return self._evolve(color_map_override=colors)
-        elif isinstance(colors, list):
+        # pyright: ignore[reportUnnecessaryIsinstance] — explicit guard kept so
+        # callers get a clear TypeError rather than an opaque error from from_hex_list.
+        if isinstance(colors, list):  # pyright: ignore[reportUnnecessaryIsinstance]
             return self._evolve(color_scheme=ColorScheme.from_hex_list(colors))
-        raise TypeError(f"Expected ColorScheme, list, or dict, got {type(colors).__name__}")
+        raise TypeError(f"Expected ColorScheme, list[str], or dict[str, str], got {type(colors).__name__}")
 
     def adjust_size(
         self,
