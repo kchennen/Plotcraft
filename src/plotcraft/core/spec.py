@@ -6,7 +6,8 @@ from dataclasses import dataclass, field
 
 import polars as pl
 
-from plotcraft.colors.palettes import ColorScheme, colors_discrete_friendly
+from plotcraft.colors.discrete import colors_discrete_friendly
+from plotcraft.colors.palettes import ColorScheme
 from plotcraft.core.aes import Aes
 from plotcraft.core.layer import Layer
 from plotcraft.themes.base import THEME_PLOTCRAFT, Theme

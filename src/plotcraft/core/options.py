@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from plotcraft.colors.palettes import ColorScheme, colors_discrete_friendly
+from plotcraft.colors.discrete import colors_discrete_friendly
+from plotcraft.colors.palettes import ColorScheme
 from plotcraft.themes.base import THEME_PLOTCRAFT, Theme
 
 
