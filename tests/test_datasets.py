@@ -5,22 +5,11 @@ from __future__ import annotations
 import polars as pl
 import pytest
 
-from plotcraft.data.loader import load_dataset
+from plotcraft.data.loader import list_datasets, load_dataset
 
-# All 11 expected dataset names
-EXPECTED_DATASETS = [
-    "energy",
-    "study",
-    "time_course",
-    "animals",
-    "distributions",
-    "gene_expression",
-    "climate",
-    "dinosaurs",
-    "eu_countries",
-    "spendings",
-    "pca",
-]
+# Derived from list_datasets() — adding a CSV to datasets/ is reflected
+# here automatically without any manual list to maintain.
+EXPECTED_DATASETS = list_datasets()
 
 
 class TestLoadDataset:
