@@ -6,7 +6,50 @@ from typing import Any
 
 from plotcraft._compat import ensure_polars
 from plotcraft._version import __version__
-from plotcraft.colors.palettes import ColorScheme, colors_discrete_friendly
+from plotcraft.colors import (
+    # Continuous
+    colors_continuous_bluepinkyellow,
+    colors_continuous_cividis,
+    colors_continuous_inferno,
+    colors_continuous_magma,
+    colors_continuous_mako,
+    colors_continuous_plasma,
+    colors_continuous_rocket,
+    colors_continuous_turbo,
+    colors_continuous_viridis,
+    # Discrete
+    colors_discrete_alger,
+    colors_discrete_apple,
+    colors_discrete_candy,
+    colors_discrete_friendly_long,
+    colors_discrete_ibm,
+    colors_discrete_metro,
+    colors_discrete_okabeito,
+    colors_discrete_rainbow,
+    colors_discrete_seaside,
+    colors_discrete_tableau10,
+    colors_discrete_tol_light,
+    colors_discrete_tol_muted,
+    colors_discrete_tol_vibrant,
+    colors_discrete_wong,
+    # Diverging
+    colors_diverging_blue2brown,
+    colors_diverging_blue2red,
+    colors_diverging_BuRd,
+    colors_diverging_BuYlRd,
+    colors_diverging_icefire,
+    colors_diverging_spectral,
+    # Journal
+    colors_journal_aaas,
+    colors_journal_d3,
+    colors_journal_igv,
+    colors_journal_jama,
+    colors_journal_lancet,
+    colors_journal_nejm,
+    colors_journal_npg,
+    new_color_scheme,
+)
+from plotcraft.colors.palettes import ColorScheme
 from plotcraft.core.aes import Aes
 from plotcraft.core.options import get_options
 from plotcraft.core.plot import PlotCraft
@@ -82,7 +125,47 @@ __all__ = [
     "PlotSpec",
     "Theme",
     "__version__",
-    "colors_discrete_friendly",
+    # Continuous
+    "colors_continuous_bluepinkyellow",
+    "colors_continuous_cividis",
+    "colors_continuous_inferno",
+    "colors_continuous_magma",
+    "colors_continuous_mako",
+    "colors_continuous_plasma",
+    "colors_continuous_rocket",
+    "colors_continuous_turbo",
+    "colors_continuous_viridis",
+    # Discrete
+    "colors_discrete_alger",
+    "colors_discrete_apple",
+    "colors_discrete_candy",
+    "colors_discrete_friendly_long",
+    "colors_discrete_ibm",
+    "colors_discrete_metro",
+    "colors_discrete_okabeito",
+    "colors_discrete_rainbow",
+    "colors_discrete_seaside",
+    "colors_discrete_tableau10",
+    "colors_discrete_tol_light",
+    "colors_discrete_tol_muted",
+    "colors_discrete_tol_vibrant",
+    "colors_discrete_wong",
+    "colors_diverging_BuRd",
+    "colors_diverging_BuYlRd",
+    # Diverging
+    "colors_diverging_blue2brown",
+    "colors_diverging_blue2red",
+    "colors_diverging_icefire",
+    "colors_diverging_spectral",
+    # Journal
+    "colors_journal_aaas",
+    "colors_journal_d3",
+    "colors_journal_igv",
+    "colors_journal_jama",
+    "colors_journal_lancet",
+    "colors_journal_nejm",
+    "colors_journal_npg",
     "ensure_polars",
+    "new_color_scheme",
     "plotcraft",
 ]
