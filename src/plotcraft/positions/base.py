@@ -19,6 +19,8 @@ class Position(ABC):
         Args:
             data: The input DataFrame with position columns.
             aes: The resolved aesthetic mapping.
-            dodge_width: The total width available for dodging.
+            dodge_width: External context width supplied by the caller (e.g.
+                bar width from a geometry).  Subclasses decide whether to use
+                this value or their own configured width.
         """
         ...

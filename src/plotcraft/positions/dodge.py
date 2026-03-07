@@ -22,13 +22,20 @@ class PositionDodge(Position):
     def adjust(self, data: pl.DataFrame, aes: Aes, dodge_width: float) -> pl.DataFrame:
         """Apply horizontal dodge based on color/fill grouping.
 
+        Uses ``self.width`` (set at construction) for the total dodge span,
+        so all groups share the same configured width regardless of the
+        ``dodge_width`` context supplied by the caller.
+
+        Null values in the grouping column receive a zero offset (no dodge).
+
         Args:
-            data: The input DataFrame with position columns.
-            aes: The resolved aesthetic mapping.
-            dodge_width: The total width available for dodging.
+            data: The input DataFrame with a ``_x_numeric`` position column.
+            aes: The resolved aesthetic mapping (must have color or fill set).
+            dodge_width: External context width from the caller (unused here;
+                ``self.width`` controls the effective dodge span).
 
         Returns:
-            A new DataFrame with adjusted x positions.
+            A new DataFrame with ``_x_numeric`` shifted per group.
         """
         color_col = aes.color or aes.fill
         if color_col is None or aes.x is None:
@@ -36,11 +43,15 @@ class PositionDodge(Position):
         if "_x_numeric" not in data.columns:
             return data
 
-        groups = data[color_col].unique().sort().to_list()
+        # Drop nulls when building groups so null rows get the zero-offset default.
+        groups = data[color_col].drop_nulls().unique().sort().to_list()
         n_groups = len(groups)
         if n_groups <= 1:
             return data
 
-        offsets = {g: (i - (n_groups - 1) / 2) * (dodge_width / n_groups) for i, g in enumerate(groups)}
+        offsets = {g: (i - (n_groups - 1) / 2) * (self.width / n_groups) for i, g in enumerate(groups)}
 
-        return data.with_columns((pl.col("_x_numeric") + pl.col(color_col).replace_strict(offsets)).alias("_x_numeric"))
+        # Non-strict replace: unexpected / null values map to 0.0 (no offset).
+        return data.with_columns(
+            (pl.col("_x_numeric") + pl.col(color_col).replace(offsets, default=0.0)).alias("_x_numeric"),
+        )

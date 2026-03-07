@@ -24,7 +24,9 @@ class GeomPoint(Geom):
         """Initialize with point size, alpha, marker style, and additional kwargs.
 
         Args:
-            size: Point radius in data units.
+            size: Point size in display points.  Passed to ``ax.scatter``
+                as ``s=size²`` (marker area in points²), so the visual
+                radius scales linearly with this value.
             alpha: Opacity from 0.0 (transparent) to 1.0 (opaque).
             marker: Matplotlib marker style string.
             **kwargs: Extra keyword arguments forwarded to ``ax.scatter``.
