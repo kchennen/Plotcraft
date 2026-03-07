@@ -1,6 +1,8 @@
 # Custom Dictionary Words
 abstra
 Abstra
+addopts
+BRCA
 celerybeat
 Chennen
 codz
@@ -10,6 +12,7 @@ cursorindexingignore
 cython
 Cython
 dmypy
+EGFR
 envrc
 htmlcov
 ipynb
@@ -17,7 +20,9 @@ ipython
 Kirsley
 marimo
 Marimo
+matplotlib
 mkdocs
+mkdocstrings
 mypy
 nosetests
 pipenv
@@ -25,6 +30,7 @@ Pipfile
 Plotcraft
 pybuilder
 pycache
+pydocstyle
 pyenv
 pyflow
 pypa
@@ -33,12 +39,14 @@ pypirc
 pytest
 pytype
 ropeproject
+scipy
 scrapy
 Scrapy
 sdist
 Spyder
 spyderproject
 spyproject
+testpaths
 tidyplot
 venv
 webassets
