@@ -6,7 +6,11 @@ import pytest
 
 @pytest.fixture
 def gene_response_df() -> pl.DataFrame:
-    """A 24-row synthetic drug response study dataset."""
+    """A 24-row synthetic drug response study dataset.
+
+    Returns:
+        A Polars DataFrame with gene, expression, treatment, and replicate columns.
+    """
     return pl.DataFrame(
         {
             "gene": ["BRCA1"] * 8 + ["TP53"] * 8 + ["EGFR"] * 8,

@@ -14,5 +14,11 @@ class Position(ABC):
 
     @abstractmethod
     def adjust(self, data: pl.DataFrame, aes: Aes, dodge_width: float) -> pl.DataFrame:
-        """Adjust positions. Returns a new DataFrame."""
+        """Adjust positions. Returns a new DataFrame.
+
+        Args:
+            data: The input DataFrame with position columns.
+            aes: The resolved aesthetic mapping.
+            dodge_width: The total width available for dodging.
+        """
         ...
