@@ -36,12 +36,13 @@ class TestGeomBar:
             }
         )
         color_map = {"ctrl": "#FF0000", "drug": "#0000FF"}
+        x_cat_map = {"A": 0, "B": 1}
         geom = GeomBar()
         geom.draw(
             ax,
             data,
             Aes(x="group", y="_count", color="treatment"),
-            {"color_map": color_map},
+            {"color_map": color_map, "x_cat_map": x_cat_map},
             None,
         )
         plt.close(fig)

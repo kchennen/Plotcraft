@@ -47,6 +47,7 @@ class GeomBar(Geom):
             None. Modifies the Axes in place.
         """
         color_map: dict[str, str] = scales.get("color_map", {})
+        x_cat_map: dict[str, int] = scales.get("x_cat_map", {})
         color_col = aes.color or aes.fill
         y_col = aes.y or "_count"
 
@@ -59,9 +60,7 @@ class GeomBar(Geom):
                 subset = data.filter(pl.col(color_col) == group_val)
                 x_vals = subset[aes.x].to_list() if aes.x else list(range(len(subset)))
                 y_vals = subset[y_col].to_list()
-                # Convert categorical x to numeric positions
-                all_x = data[aes.x].unique().sort().to_list() if aes.x else x_vals
-                x_pos = [all_x.index(v) + (i - (n_groups - 1) / 2) * bar_width for v in x_vals]
+                x_pos = self._resolve_x_grouped(x_vals, x_cat_map, i, n_groups, bar_width)
                 color = color_map.get(str(group_val), "#333333")
                 ax.bar(
                     x_pos,
@@ -75,13 +74,13 @@ class GeomBar(Geom):
                 )
             if aes.x:
                 all_x = data[aes.x].unique().sort().to_list()
-                ax.set_xticks(range(len(all_x)))
-                ax.set_xticklabels([str(v) for v in all_x])
+                self._apply_x_ticks(ax, all_x, x_cat_map)
         else:
             x_vals = data[aes.x].to_list() if aes.x else list(range(len(data)))
             y_vals = data[y_col].to_list()
+            x_pos = self._resolve_x(data, aes, x_cat_map)
             ax.bar(
-                range(len(x_vals)),
+                x_pos,
                 y_vals,
                 width=self.width,
                 alpha=self.alpha,
@@ -89,8 +88,7 @@ class GeomBar(Geom):
                 **self.kwargs,
             )
             if aes.x:
-                ax.set_xticks(range(len(x_vals)))
-                ax.set_xticklabels([str(v) for v in x_vals])
+                self._apply_x_ticks(ax, x_vals, x_cat_map)
 
 
 class GeomDash(Geom):
@@ -127,6 +125,7 @@ class GeomDash(Geom):
             None. Modifies the Axes in place.
         """
         color_map: dict[str, str] = scales.get("color_map", {})
+        x_cat_map: dict[str, int] = scales.get("x_cat_map", {})
         color_col = aes.color or aes.fill
         y_col = aes.y or "_count"
         dash_width = 0.3
@@ -134,40 +133,40 @@ class GeomDash(Geom):
         if color_col and color_col in data.columns:
             groups = data[color_col].unique().sort().to_list()
             n_groups = len(groups)
-            all_x = data[aes.x].unique().sort().to_list() if aes.x else []
+            group_width = 0.7 / n_groups
 
             for i, group_val in enumerate(groups):
                 subset = data.filter(pl.col(color_col) == group_val)
                 x_vals = subset[aes.x].to_list() if aes.x else list(range(len(subset)))
                 y_vals = subset[y_col].to_list()
+                x_pos = self._resolve_x_grouped(x_vals, x_cat_map, i, n_groups, group_width)
                 color = color_map.get(str(group_val), "#333333")
-                for x_val, y_val in zip(x_vals, y_vals):
-                    x_pos = all_x.index(x_val) + (i - (n_groups - 1) / 2) * (0.7 / n_groups)
+                for idx, (pos, y_val) in enumerate(zip(x_pos, y_vals)):
                     ax.hlines(
                         y_val,
-                        x_pos - dash_width / 2,
-                        x_pos + dash_width / 2,
+                        pos - dash_width / 2,
+                        pos + dash_width / 2,
                         colors=color,
                         linewidth=self.linewidth,
                         zorder=3,
-                        label=str(group_val) if x_val == x_vals[0] else "_nolegend_",
+                        label=str(group_val) if idx == 0 else "_nolegend_",
                         **self.kwargs,
                     )
             if aes.x:
-                ax.set_xticks(range(len(all_x)))
-                ax.set_xticklabels([str(v) for v in all_x])
+                all_x = data[aes.x].unique().sort().to_list()
+                self._apply_x_ticks(ax, all_x, x_cat_map)
         else:
             x_vals = data[aes.x].to_list() if aes.x else list(range(len(data)))
             y_vals = data[y_col].to_list()
-            for j, (x_val, y_val) in enumerate(zip(x_vals, y_vals)):
+            x_pos = self._resolve_x(data, aes, x_cat_map)
+            for pos, y_val in zip(x_pos, y_vals):
                 ax.hlines(
                     y_val,
-                    j - dash_width / 2,
-                    j + dash_width / 2,
+                    pos - dash_width / 2,
+                    pos + dash_width / 2,
                     linewidth=self.linewidth,
                     zorder=3,
                     **self.kwargs,
                 )
             if aes.x:
-                ax.set_xticks(range(len(x_vals)))
-                ax.set_xticklabels([str(v) for v in x_vals])
+                self._apply_x_ticks(ax, x_vals, x_cat_map)

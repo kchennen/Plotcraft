@@ -19,6 +19,7 @@ class GeomPoint(Geom):
         size: float = 2.0,
         alpha: float = 1.0,
         marker: str = "o",
+        show_colorbar: bool = True,
         **kwargs: Any,  # noqa: ANN401
     ) -> None:
         """Initialize with point size, alpha, marker style, and additional kwargs.
@@ -29,11 +30,14 @@ class GeomPoint(Geom):
                 radius scales linearly with this value.
             alpha: Opacity from 0.0 (transparent) to 1.0 (opaque).
             marker: Matplotlib marker style string.
+            show_colorbar: Whether to show a colorbar when using a continuous
+                color scale (default True).
             **kwargs: Extra keyword arguments forwarded to ``ax.scatter``.
         """
         self.size = size
         self.alpha = alpha
         self.marker = marker
+        self.show_colorbar = show_colorbar
         self.kwargs = kwargs
 
     def draw(
@@ -76,7 +80,8 @@ class GeomPoint(Geom):
                 zorder=3,
                 **self.kwargs,
             )
-            ax.figure.colorbar(scatter, ax=ax, shrink=0.8)
+            if self.show_colorbar:
+                ax.figure.colorbar(scatter, ax=ax, shrink=0.8)
             return
 
         # ── Discrete color path ───────────────────────────────────────────────
@@ -109,17 +114,3 @@ class GeomPoint(Geom):
                 zorder=3,
                 **self.kwargs,
             )
-
-    @staticmethod
-    def _resolve_x(
-        data: pl.DataFrame,
-        aes: Aes,
-        x_cat_map: dict[str, int],
-    ) -> list[int] | list[Any]:
-        """Convert x values to integer positions when a category map exists."""
-        if not aes.x:
-            return list(range(len(data)))
-        raw = data[aes.x].to_list()
-        if x_cat_map:
-            return [x_cat_map[str(v)] for v in raw]
-        return raw

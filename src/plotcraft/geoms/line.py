@@ -47,16 +47,15 @@ class GeomLine(Geom):
             None. Modifies the Axes in place.
         """
         color_map: dict[str, str] = scales.get("color_map", {})
+        x_cat_map: dict[str, int] = scales.get("x_cat_map", {})
         color_col = aes.color or aes.fill
         y_col = aes.y or "_count"
 
         if color_col and color_col in data.columns:
-            all_x = data[aes.x].unique().sort().to_list() if aes.x else []
             for group_val in data[color_col].unique().sort().to_list():
                 subset = data.filter(pl.col(color_col) == group_val)
-                x_vals = subset[aes.x].to_list() if aes.x else list(range(len(subset)))
+                x_pos = self._resolve_x(subset, aes, x_cat_map)
                 y_vals = subset[y_col].to_list()
-                x_pos = [all_x.index(v) for v in x_vals] if aes.x and all_x else x_vals
                 color = color_map.get(str(group_val), "#333333")
                 ax.plot(
                     x_pos,
@@ -68,13 +67,13 @@ class GeomLine(Geom):
                     zorder=2,
                     **self.kwargs,
                 )
-            if aes.x and all_x:
-                ax.set_xticks(range(len(all_x)))
-                ax.set_xticklabels([str(v) for v in all_x])
+            if aes.x:
+                all_x = data[aes.x].unique().sort().to_list()
+                self._apply_x_ticks(ax, all_x, x_cat_map)
         else:
             x_vals = data[aes.x].to_list() if aes.x else list(range(len(data)))
+            x_pos = self._resolve_x(data, aes, x_cat_map)
             y_vals = data[y_col].to_list()
-            x_pos = list(range(len(x_vals)))
             ax.plot(
                 x_pos,
                 y_vals,
@@ -84,8 +83,7 @@ class GeomLine(Geom):
                 **self.kwargs,
             )
             if aes.x:
-                ax.set_xticks(x_pos)
-                ax.set_xticklabels([str(v) for v in x_vals])
+                self._apply_x_ticks(ax, x_vals, x_cat_map)
 
 
 class GeomArea(Geom):
@@ -122,16 +120,15 @@ class GeomArea(Geom):
             None. Modifies the Axes in place.
         """
         color_map: dict[str, str] = scales.get("color_map", {})
+        x_cat_map: dict[str, int] = scales.get("x_cat_map", {})
         color_col = aes.color or aes.fill
         y_col = aes.y or "_count"
 
         if color_col and color_col in data.columns:
-            all_x = data[aes.x].unique().sort().to_list() if aes.x else []
             for group_val in data[color_col].unique().sort().to_list():
                 subset = data.filter(pl.col(color_col) == group_val)
-                x_vals = subset[aes.x].to_list() if aes.x else list(range(len(subset)))
+                x_pos = self._resolve_x(subset, aes, x_cat_map)
                 y_vals = subset[y_col].to_list()
-                x_pos = [all_x.index(v) for v in x_vals] if aes.x and all_x else x_vals
                 color = color_map.get(str(group_val), "#333333")
                 ax.fill_between(
                     x_pos,
@@ -142,14 +139,13 @@ class GeomArea(Geom):
                     zorder=2,
                     **self.kwargs,
                 )
-            if aes.x and all_x:
-                ax.set_xticks(range(len(all_x)))
-                ax.set_xticklabels([str(v) for v in all_x])
+            if aes.x:
+                all_x = data[aes.x].unique().sort().to_list()
+                self._apply_x_ticks(ax, all_x, x_cat_map)
         else:
             x_vals = data[aes.x].to_list() if aes.x else list(range(len(data)))
+            x_pos = self._resolve_x(data, aes, x_cat_map)
             y_vals = data[y_col].to_list()
-            x_pos = list(range(len(x_vals)))
             ax.fill_between(x_pos, y_vals, alpha=self.alpha, zorder=2, **self.kwargs)
             if aes.x:
-                ax.set_xticks(x_pos)
-                ax.set_xticklabels([str(v) for v in x_vals])
+                self._apply_x_ticks(ax, x_vals, x_cat_map)
