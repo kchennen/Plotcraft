@@ -29,12 +29,13 @@ class RenderEngine:
         # Apply theme
         spec.theme.apply(ax)
 
-        # Build color map
-        color_map = self._build_color_map(spec)
+        # Build color map — spread directly so geoms see the correct keys:
+        # discrete → {"color_map": {val: hex, …}}
+        # continuous → {"colormap": Colormap, "norm": Normalize, "continuous": True}
+        scales: dict[str, Any] = {**self._build_color_map(spec)}
 
         # Build categorical axis map (if x column is non-numeric)
         x_cat_map = self._build_category_map(spec)
-        scales: dict[str, Any] = {"color_map": color_map}
         if x_cat_map:
             scales["x_cat_map"] = x_cat_map
 
@@ -72,26 +73,53 @@ class RenderEngine:
         fig, ax = plt.subplots(figsize=(w_in, h_in))
         return fig, ax
 
-    def _build_color_map(self, spec: PlotSpec) -> dict[str, str]:
-        """Map unique color-column values to colors from the scheme.
+    def _build_color_map(self, spec: PlotSpec) -> dict[str, Any]:
+        """Map color-column values to colors.
 
         Args:
-            spec: The PlotSpec containing data, aesthetics, and color scheme.
+            spec: The PlotSpec whose aes.color or aes.fill column is inspected.
 
-        Returns:
-            A dict mapping category strings to hex color strings.
+        Returns a dict with either:
+        - {"color_map": {val: hex, ...}} for discrete data
+        - {"colormap": Colormap, "norm": Normalize, "continuous": True} for continuous data
         """
         # If user provided an explicit override, use it
         if spec.color_map_override:
-            return spec.color_map_override
+            return {"color_map": spec.color_map_override}
 
         color_col = spec.aes.color or spec.aes.fill
         if color_col is None or color_col not in spec.data.columns:
             return {}
 
+        # Detect continuous: numeric column + continuous/diverging palette
+        col_dtype = spec.data[color_col].dtype
+        is_numeric = col_dtype.is_numeric()
+        is_continuous_palette = spec.color_scheme.palette_type in ("continuous", "diverging")
+
+        if is_numeric and is_continuous_palette:
+            import matplotlib.colors as mcolors
+            import numpy as np
+
+            values = spec.data[color_col].to_numpy()
+            vmin, vmax = float(np.nanmin(values)), float(np.nanmax(values))
+
+            if spec.color_scheme.palette_type == "diverging":
+                abs_max = max(abs(vmin), abs(vmax))
+                norm = mcolors.Normalize(vmin=-abs_max, vmax=abs_max)
+            else:
+                norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+
+            cmap = mcolors.LinearSegmentedColormap.from_list(
+                spec.color_scheme.name,
+                list(spec.color_scheme.colors),
+                N=256,
+            )
+            return {"colormap": cmap, "norm": norm, "continuous": True}
+
+        # Discrete path
         unique_vals = spec.data[color_col].unique().sort().to_list()
         colors = spec.color_scheme.get_colors(len(unique_vals))
-        return {str(v): c for v, c in zip(unique_vals, colors)}
+        return {"color_map": {str(v): c for v, c in zip(unique_vals, colors)}}
 
     def _build_category_map(
         self,

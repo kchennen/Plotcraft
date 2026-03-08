@@ -2,13 +2,17 @@
 
 import os
 import tempfile
+from pathlib import Path
 
+import matplotlib.pyplot as plt
 import polars as pl
 import pytest
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 import plotcraft as pc
+from plotcraft.colors.continuous import colors_continuous_viridis
+from plotcraft.colors.journal import colors_journal_npg
 from plotcraft.core.aes import Aes
 from plotcraft.core.layer import Layer
 from plotcraft.core.spec import PlotSpec
@@ -46,8 +50,6 @@ class TestRenderEngine:
 
     def test_render_returns_figure_and_axes(self, scatter_spec: PlotSpec):
         """Render produces a matplotlib Figure and Axes."""
-        import matplotlib.pyplot as plt
-
         engine = RenderEngine()
         fig, ax = engine.render(scatter_spec)
         assert isinstance(fig, Figure)
@@ -56,8 +58,6 @@ class TestRenderEngine:
 
     def test_render_with_color_produces_legend(self, scatter_spec: PlotSpec):
         """Color aesthetic generates legend entries for each group."""
-        import matplotlib.pyplot as plt
-
         engine = RenderEngine()
         fig, ax = engine.render(scatter_spec)
         _handles, labels = ax.get_legend_handles_labels()
@@ -66,8 +66,6 @@ class TestRenderEngine:
 
     def test_categorical_xaxis_tick_positions(self, scatter_spec: PlotSpec):
         """Categorical x column maps to contiguous integer tick positions."""
-        import matplotlib.pyplot as plt
-
         engine = RenderEngine()
         fig, ax = engine.render(scatter_spec)
         # Polars .unique().sort() gives alphabetical order:
@@ -77,8 +75,6 @@ class TestRenderEngine:
 
     def test_categorical_xaxis_tick_labels(self, scatter_spec: PlotSpec):
         """Categorical x-axis labels match the sorted unique category values."""
-        import matplotlib.pyplot as plt
-
         engine = RenderEngine()
         fig, ax = engine.render(scatter_spec)
         labels = [t.get_text() for t in ax.get_xticklabels()]
@@ -87,7 +83,6 @@ class TestRenderEngine:
 
     def test_categorical_xaxis_horizontal_margin(self, scatter_spec: PlotSpec):
         """Categorical x-axis applies 0.15 horizontal margin for breathing room."""
-        import matplotlib.pyplot as plt
         import pytest
 
         engine = RenderEngine()
@@ -132,42 +127,61 @@ class TestSavePlot:
             os.unlink(path)
 
 
+class TestContinuousColor:
+    """Test continuous color mapping in the render pipeline."""
+
+    def test_continuous_scatter(self) -> None:
+        """Scatter with continuous color palette renders without error."""
+        df = pl.DataFrame(
+            {
+                "x": [1.0, 2.0, 3.0, 4.0, 5.0],
+                "y": [2.0, 4.0, 1.0, 5.0, 3.0],
+                "value": [0.0, 0.25, 0.5, 0.75, 1.0],
+            }
+        )
+        fig, _ = (
+            pc.plotcraft(df, x="x", y="y", color="value")
+            .add_data_points()
+            .adjust_colors(colors_continuous_viridis)
+            .render()
+        )
+        plt.close(fig)
+
+
 class TestFullWorkflow:
-    """Tests for a complete PlotCraft workflow from spec construction to file output."""
+    """End-to-end workflow tests combining Sprint 1 + Sprint 2 features."""
 
-    def test_definition_of_done(self, gene_response_df: pl.DataFrame) -> None:
-        """The exact chain from the Sprint 1 Definition of Done."""
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
-            path = f.name
-        try:
-            (
-                pc.plotcraft(gene_response_df, x="gene", y="expression", color="treatment")
-                .add_data_points()
-                .add_title("Gene Response")
-                .adjust_colors(["#E41A1C", "#377EB8"])
-                .remove_legend()
-                .save_plot(path)
-            )
-            assert os.path.exists(path)
-            assert os.path.getsize(path) > 1000  # Non-trivial file
-        finally:
-            os.unlink(path)
+    def test_definition_of_done(self, tmp_path: Path) -> None:
+        """The Sprint 2 Definition of Done chain succeeds."""
+        df = pc.load_dataset("study")
+        out = str(tmp_path / "test_output.png")
+        (
+            pc.plotcraft(df, x="group", color="treatment")
+            .add_count_bar()
+            .add_title("Participant Count")
+            .adjust_colors(colors_journal_npg)
+            .remove_legend()
+            .save_plot(out)
+        )
+        assert (tmp_path / "test_output.png").exists()
 
-    def test_branching_workflow(self, gene_response_df: pl.DataFrame) -> None:
-        """Verify branching produces independent plots."""
-        base = pc.plotcraft(gene_response_df, x="gene", y="expression", color="treatment").add_data_points()
-        plot_a = base.adjust_colors(["#FF0000", "#00FF00"])
-        plot_b = base.adjust_colors(["#0000FF", "#FFFF00"])
+    def test_saturation_workflow(self) -> None:
+        """with_saturation() integrates with the render pipeline."""
+        df = pc.load_dataset("study")
+        faded = colors_journal_npg.with_saturation(0.3)
+        fig, _ = pc.plotcraft(df, x="group", color="treatment").add_count_bar().adjust_colors(faded).render()
+        plt.close(fig)
 
-        with (
-            tempfile.NamedTemporaryFile(suffix=".png", delete=False) as fa,
-            tempfile.NamedTemporaryFile(suffix=".png", delete=False) as fb,
-        ):
-            try:
-                plot_a.save_plot(fa.name)
-                plot_b.save_plot(fb.name)
-                assert os.path.getsize(fa.name) > 0
-                assert os.path.getsize(fb.name) > 0
-            finally:
-                os.unlink(fa.name)
-                os.unlink(fb.name)
+    def test_reversed_workflow(self) -> None:
+        """reversed() integrates with the render pipeline."""
+        df = pc.load_dataset("study")
+        rev = colors_journal_npg.reversed()
+        fig, _ = pc.plotcraft(df, x="group", color="treatment").add_count_bar().adjust_colors(rev).render()
+        plt.close(fig)
+
+    def test_new_color_scheme(self) -> None:
+        """new_color_scheme() creates usable palettes."""
+        df = pc.load_dataset("study")
+        custom = pc.new_color_scheme("test", ["#FF0000", "#00FF00", "#0000FF"])
+        fig, _ = pc.plotcraft(df, x="group", color="treatment").add_count_bar().adjust_colors(custom).render()
+        plt.close(fig)

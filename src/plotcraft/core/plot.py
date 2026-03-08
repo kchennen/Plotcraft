@@ -47,6 +47,33 @@ class PlotCraft:
         """Return spec with a history breadcrumb appended."""
         return replace(self._spec, history=(*self._spec.history, name))
 
+    # --- Internal layer builder ---
+    def _add_count_layer(self, geom: Any, history_name: str) -> PlotCraft:  # noqa: ANN401
+        """Build a count-aggregation layer and return a new PlotCraft.
+
+        Shared by all ``add_count_*`` methods to eliminate boilerplate.
+
+        Args:
+            geom: The geometry instance to wrap (e.g. GeomBar, GeomLine).
+            history_name: Name to append to the plot history breadcrumb.
+
+        Returns:
+            A new PlotCraft with the count layer appended.
+        """
+        from plotcraft.core.aes import Aes
+        from plotcraft.core.layer import Layer
+        from plotcraft.positions.identity import PositionIdentity
+        from plotcraft.stats.aggregation import StatCount
+
+        layer = Layer(
+            geom=geom,
+            stat=StatCount(),
+            position=PositionIdentity(),
+            aes_override=Aes(y="_count"),
+        )
+        new_spec = self._add_history(history_name)
+        return PlotCraft(replace(new_spec, layers=(*new_spec.layers, layer)))
+
     # --- add_* methods ---
     # Lazy-imported inside methods to avoid circular imports
     def add_data_points(self, size: float = 2.0, alpha: float = 1.0, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
@@ -77,6 +104,36 @@ class PlotCraft:
             caption=caption,
             history=(*self._spec.history, "add_caption"),
         )
+
+    def add_count_bar(self, width: float = 0.7, alpha: float = 0.85, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add a bar chart showing counts per group."""
+        from plotcraft.geoms.bar import GeomBar
+
+        return self._add_count_layer(GeomBar(width=width, alpha=alpha, **kwargs), "add_count_bar")
+
+    def add_count_dash(self, linewidth: float = 2.0, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add horizontal dashes showing counts per group."""
+        from plotcraft.geoms.bar import GeomDash
+
+        return self._add_count_layer(GeomDash(linewidth=linewidth, **kwargs), "add_count_dash")
+
+    def add_count_dot(self, size: float = 4.0, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add dots showing counts per group."""
+        from plotcraft.geoms.point import GeomPoint
+
+        return self._add_count_layer(GeomPoint(size=size, **kwargs), "add_count_dot")
+
+    def add_count_line(self, linewidth: float = 1.5, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add connected lines showing counts per group."""
+        from plotcraft.geoms.line import GeomLine
+
+        return self._add_count_layer(GeomLine(linewidth=linewidth, **kwargs), "add_count_line")
+
+    def add_count_area(self, alpha: float = 0.4, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add filled area showing counts per group."""
+        from plotcraft.geoms.line import GeomArea
+
+        return self._add_count_layer(GeomArea(alpha=alpha, **kwargs), "add_count_area")
 
     # --- adjust_* methods ---
     def adjust_colors(self, colors: ColorScheme | list[str] | dict[str, str]) -> PlotCraft:
