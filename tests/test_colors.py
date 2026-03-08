@@ -274,3 +274,59 @@ class TestPaletteTotals:
         assert len(_DIVERGING_PALETTES) == 6
         total = 15 + 7 + 9 + 6
         assert total == 37
+
+
+# ── ColorScheme Pydantic validation ──────────────────────────────────────────
+
+
+class TestColorSchemeValidation:
+    """Verify that ColorScheme rejects invalid construction arguments."""
+
+    def test_empty_colors_raises(self) -> None:
+        """ColorScheme with an empty colors tuple raises ValidationError."""
+        from pydantic import ValidationError
+
+        with pytest.raises(ValidationError, match="colors"):
+            ColorScheme(name="bad", colors=())
+
+    def test_empty_name_raises(self) -> None:
+        """ColorScheme with an empty string name raises ValidationError."""
+        from pydantic import ValidationError
+
+        with pytest.raises(ValidationError, match="name"):
+            ColorScheme(name="", colors=("#FF0000",))
+
+    def test_whitespace_only_name_raises(self) -> None:
+        """ColorScheme with a whitespace-only name raises ValidationError."""
+        from pydantic import ValidationError
+
+        with pytest.raises(ValidationError, match="name"):
+            ColorScheme(name="   ", colors=("#FF0000",))
+
+    def test_invalid_palette_type_raises(self) -> None:
+        """ColorScheme with an unknown palette_type raises ValidationError."""
+        from pydantic import ValidationError
+
+        with pytest.raises(ValidationError):
+            ColorScheme(name="bad", colors=("#FF0000",), palette_type="qualitative")  # type: ignore[arg-type]
+
+    def test_valid_construction_all_types(self) -> None:
+        """ColorScheme accepts all three valid palette_type values."""
+        for ptype in ("discrete", "continuous", "diverging"):
+            cs = ColorScheme(name="ok", colors=("#FF0000", "#00FF00"), palette_type=ptype)  # type: ignore[arg-type]
+            assert cs.palette_type == ptype
+
+    def test_single_color_is_valid(self) -> None:
+        """A one-element colors tuple is accepted."""
+        cs = ColorScheme(name="mono", colors=("#AABBCC",))
+        assert len(cs.colors) == 1
+
+    def test_new_color_scheme_empty_raises(self) -> None:
+        """new_color_scheme() with an empty list raises ValueError."""
+        with pytest.raises(ValueError, match="non-empty"):
+            new_color_scheme("empty", [])
+
+    def test_from_hex_list_empty_raises(self) -> None:
+        """ColorScheme.from_hex_list() with an empty list raises ValueError."""
+        with pytest.raises(ValueError, match="non-empty"):
+            ColorScheme.from_hex_list([])

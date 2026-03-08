@@ -14,6 +14,7 @@
 
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-latest?style=flat-square&logo=python&color=11557C)](https://matplotlib.org/)
 [![Polars](https://img.shields.io/badge/Polars-latest?style=flat-square&logo=polars&color=EDBB85)](https://pola-rs.github.io/polars-book/)
+[![Pydantic](https://img.shields.io/badge/Pydantic-latest?style=flat-square&logo=pydantic&color=F18AAF)](https://pydantic-docs.helpmanual.io/)
 
 ## Quality
 
@@ -49,6 +50,7 @@ mappings, and visual layers — making figures easy to create, reproduce, and cu
 - 📐 **Size control** — figure dimensions in mm, cm, or inches
 - 💾 **Export** — save to PNG, PDF, SVG, or any matplotlib-supported format
 - ✅ **Type-safe** — fully typed, passes `mypy --strict`
+- 🛡️ **Validated inputs** — Pydantic-backed `Theme` and `ColorScheme`; fail-fast `ValueError` guards on all geometry and plot parameters
 
 ---
 

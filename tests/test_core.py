@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 import polars as pl
+import pytest
 
 import plotcraft as pc
 
@@ -208,3 +209,77 @@ class TestCountMethods:
             .render()
         )
         plt.close(fig)
+
+
+class TestAdjustSizeValidation:
+    """Verify that adjust_size() validates its arguments."""
+
+    def test_invalid_units_raises_value_error(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() raises ValueError for unknown unit strings."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        with pytest.raises(ValueError, match="units"):
+            p.adjust_size(width=100, units="inches")  # type: ignore[arg-type]
+
+    def test_uppercase_units_raises_value_error(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() raises ValueError for case-mismatched unit (e.g. 'CM')."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        with pytest.raises(ValueError, match="units"):
+            p.adjust_size(width=100, units="CM")  # type: ignore[arg-type]
+
+    def test_negative_width_raises_value_error(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() raises ValueError when width is negative."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        with pytest.raises(ValueError, match="width"):
+            p.adjust_size(width=-50.0)
+
+    def test_zero_width_raises_value_error(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() raises ValueError when width is zero."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        with pytest.raises(ValueError, match="width"):
+            p.adjust_size(width=0.0)
+
+    def test_negative_height_raises_value_error(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() raises ValueError when height is negative."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        with pytest.raises(ValueError, match="height"):
+            p.adjust_size(height=-10.0)
+
+    def test_valid_cm_units_accepted(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() converts cm correctly (1 cm = 10 mm)."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        result = p.adjust_size(width=10.0, units="cm")
+        assert result.spec.width_mm == pytest.approx(100.0)
+
+    def test_valid_in_units_accepted(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_size() converts inches correctly (1 in = 25.4 mm)."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        result = p.adjust_size(width=1.0, units="in")
+        assert result.spec.width_mm == pytest.approx(25.4)
+
+
+class TestAdjustColorsValidation:
+    """Verify that adjust_colors() rejects unsupported argument types."""
+
+    def test_invalid_type_raises_type_error(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_colors() raises TypeError for an integer argument."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        with pytest.raises(TypeError, match="ColorScheme"):
+            p.adjust_colors(42)  # type: ignore[arg-type]
+
+    def test_invalid_type_tuple_raises_type_error(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_colors() raises TypeError for a tuple (not list) argument."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        with pytest.raises(TypeError, match="ColorScheme"):
+            p.adjust_colors(("#FF0000",))  # type: ignore[arg-type]
+
+    def test_empty_hex_list_raises_value_error(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_colors([]) raises ValueError because the colors list is empty."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression")
+        with pytest.raises(ValueError, match="non-empty"):
+            p.adjust_colors([])
+
+    def test_dict_colors_accepted(self, gene_response_df: pl.DataFrame) -> None:
+        """adjust_colors() accepts a dict mapping category names to hex strings."""
+        p = pc.plotcraft(gene_response_df, x="gene", y="expression", color="condition")
+        result = p.adjust_colors({"control": "#FF0000", "treated": "#0000FF"})
+        assert result.spec.color_map_override == {"control": "#FF0000", "treated": "#0000FF"}
