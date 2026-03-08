@@ -2,32 +2,21 @@
 
 > Crafting publication-ready statistical graphics in Python.
 
-<p align="center">
-  <a href="https://github.com/kchennen/Plotcraft/actions/workflows/ci.yml">
-    <img alt="CI" src="https://github.com/kchennen/Plotcraft/actions/workflows/ci.yml/badge.svg">
-  </a>
-  <a href="https://codecov.io/gh/kchennen/Plotcraft">
-    <img alt="Coverage" src="https://codecov.io/gh/kchennen/Plotcraft/graph/badge.svg">
-  </a>
-  <a href="https://www.python.org/downloads/">
-    <img alt="Python 3.13+" src="https://img.shields.io/badge/python-3.13%2B-blue.svg">
-  </a>
-  <a href="https://github.com/kchennen/Plotcraft/blob/main/LICENSE">
-    <img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache--2.0-green.svg">
-  </a>
-  <a href="https://github.com/astral-sh/ruff">
-    <img alt="Ruff" src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json">
-  </a>
-  <a href="https://mypy-lang.org/">
-    <img alt="Mypy: strict" src="https://img.shields.io/badge/mypy-strict-blue.svg">
-  </a>
-</p>
+[![CI][ci-badge]][ci-url]
+[![Coverage][cov-badge]][cov-url]
+[![Python 3.13+][py-badge]][py-url]
+[![License: Apache 2.0][lic-badge]][lic-url]
+[![Ruff][ruff-badge]][ruff-url]
+[![Mypy: strict][mypy-badge]][mypy-url]
 
 ---
 
-Plotcraft is a Python data visualization library for building elegant, publication-ready statistical graphics from tidy data. Inspired by the Grammar of Graphics and the [tidyplot](https://jbengler.github.io/tidyplots/) ecosystem, it provides a clean, declarative, chainable API for constructing complex visualizations in a structured and intuitive way.
+Plotcraft is a Python data visualization library for building elegant, publication-ready statistical graphics from tidy
+data. Inspired by the Grammar of Graphics and the [tidyplot](https://jbengler.github.io/tidyplots/) ecosystem, it
+provides a clean, declarative, chainable API for constructing complex visualizations in a structured and intuitive way.
 
-Plots are built **layer by layer** through a fluent method-chaining interface that cleanly separates data, aesthetic mappings, and visual layers — making figures easy to create, reproduce, and customize for scientific publications.
+Plots are built **layer by layer** through a fluent method-chaining interface that cleanly separates data, aesthetic
+mappings, and visual layers — making figures easy to create, reproduce, and customize for scientific publications.
 
 ---
 
@@ -35,7 +24,8 @@ Plots are built **layer by layer** through a fluent method-chaining interface th
 
 - 🔗 **Fluent API** — every method returns a new `PlotCraft` instance (immutable copy pattern), enabling safe chaining
 - 📊 **Multiple chart types** — scatter, bar, line, area, dot, and dash geometries
-- 🎨 **Rich color system** — 40+ built-in palettes across journal, discrete, continuous, and diverging categories; palette modifiers (saturation, reverse, custom)
+- 🎨 **Rich color system** — 40+ built-in palettes across journal, discrete, continuous, and diverging categories;
+  palette modifiers (saturation, reverse, custom)
 - 🔢 **Continuous color scales** — scatter plots mapped to numeric columns with automatic colorbars
 - 📦 **Bundled datasets** — 11 ready-to-use example datasets for quick prototyping
 - 📐 **Size control** — figure dimensions in mm, cm, or inches
@@ -54,7 +44,7 @@ uv add plotcraft
 pip install plotcraft
 ```
 
-**Optional extras**
+### Optional extras
 
 ```bash
 uv add "plotcraft[pandas]"   # pandas DataFrame support
@@ -97,128 +87,6 @@ fig, ax = (
 
 ---
 
-## API Overview
-
-### Entry point
-
-```python
-pc.plotcraft(data, x=..., y=..., color=..., fill=...)
-```
-
-### Chart layers
-
-| Method | Description |
-|---|---|
-| `.add_data_points(size, alpha)` | Scatter plot of individual data points |
-| `.add_count_bar(width, alpha)` | Vertical bars showing counts per group |
-| `.add_count_line(linewidth)` | Connected lines showing counts per group |
-| `.add_count_area(alpha)` | Filled area showing counts per group |
-| `.add_count_dot(size)` | Dots at count values per group |
-| `.add_count_dash(linewidth)` | Horizontal dashes at count values per group |
-
-### Annotations & adjustments
-
-| Method | Description |
-|---|---|
-| `.add_title(title)` | Set the plot title |
-| `.add_caption(caption)` | Add a caption below the plot |
-| `.adjust_colors(palette)` | Apply a color palette (ColorScheme, list, or dict) |
-| `.adjust_size(width, height, units)` | Set figure dimensions (`"mm"`, `"cm"`, `"in"`) |
-| `.remove_legend()` | Hide the legend |
-| `.remove_x_axis_title()` | Remove the x-axis label |
-| `.remove_y_axis_title()` | Remove the y-axis label |
-
-### Terminal methods
-
-| Method | Returns | Description |
-|---|---|---|
-| `.render()` | `(Figure, Axes)` | Render and return matplotlib objects |
-| `.save_plot(path, dpi=300)` | `PlotCraft` | Save to file (chainable) |
-| `.view_plot()` | `PlotCraft` | Display interactively (chainable) |
-
----
-
-## Color Palettes
-
-Plotcraft ships with 40+ palettes in four categories.
-
-### Journal palettes
-
-Designed to match the color schemes of major scientific journals.
-
-```python
-pc.colors_journal_npg    # Nature Publishing Group
-pc.colors_journal_aaas   # Science / AAAS
-pc.colors_journal_jama   # JAMA
-pc.colors_journal_lancet # The Lancet
-pc.colors_journal_nejm   # New England Journal of Medicine
-pc.colors_journal_d3     # D3.js category10
-pc.colors_journal_igv    # IGV genome browser
-```
-
-### Discrete palettes
-
-Colorblind-friendly and general-purpose categorical palettes.
-
-```python
-pc.colors_discrete_okabeito      # Okabe & Ito (colorblind-safe)
-pc.colors_discrete_wong          # Wong (colorblind-safe)
-pc.colors_discrete_ibm           # IBM Design (colorblind-safe)
-pc.colors_discrete_tableau10     # Tableau 10
-pc.colors_discrete_tol_vibrant   # Paul Tol vibrant
-pc.colors_discrete_tol_muted     # Paul Tol muted
-# ... and more
-```
-
-### Continuous palettes
-
-For mapping numeric values to color gradients.
-
-```python
-pc.colors_continuous_viridis
-pc.colors_continuous_plasma
-pc.colors_continuous_magma
-pc.colors_continuous_inferno
-pc.colors_continuous_cividis
-# ... and more
-```
-
-### Diverging palettes
-
-For data that diverges around a meaningful midpoint.
-
-```python
-pc.colors_diverging_blue2red
-pc.colors_diverging_spectral
-pc.colors_diverging_BuRd
-# ... and more
-```
-
-### Palette modifiers
-
-```python
-palette = pc.colors_journal_npg
-palette.with_saturation(0.4)   # desaturate
-palette.reversed()             # reverse order
-
-# Create a custom palette
-my_palette = pc.new_color_scheme("brand", ["#E63946", "#457B9D", "#1D3557"])
-```
-
----
-
-## Bundled Datasets
-
-```python
-pc.list_datasets()
-# ['animals', 'climate', 'dinosaurs', 'distributions', 'energy',
-#  'eu_countries', 'gene_expression', 'pca', 'spendings', 'study', 'time_course']
-
-df = pc.load_dataset("gene_expression")
-```
-
----
-
 ## Development
 
 ```bash
@@ -235,7 +103,7 @@ uv run ruff format src/   # format
 
 ### Project structure
 
-```
+```text
 src/plotcraft/
 ├── core/          # PlotCraft API, PlotSpec, Aes, Layer
 ├── geoms/         # Geometry classes (GeomPoint, GeomBar, GeomLine, …)
@@ -268,3 +136,20 @@ src/plotcraft/
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE) for details.
+
+---
+
+<!-- markdownlint-disable MD013 -->
+[ci-badge]: https://github.com/kchennen/Plotcraft/actions/workflows/ci.yml/badge.svg
+[ci-url]: https://github.com/kchennen/Plotcraft/actions/workflows/ci.yml
+[cov-badge]: https://codecov.io/gh/kchennen/Plotcraft/graph/badge.svg
+[cov-url]: https://codecov.io/gh/kchennen/Plotcraft
+[py-badge]: https://img.shields.io/badge/python-3.13%2B-blue.svg
+[py-url]: https://www.python.org/downloads/
+[lic-badge]: https://img.shields.io/badge/license-Apache--2.0-green.svg
+[lic-url]: https://github.com/kchennen/Plotcraft/blob/main/LICENSE
+[ruff-badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+[ruff-url]: https://github.com/astral-sh/ruff
+[mypy-badge]: https://img.shields.io/badge/mypy-strict-blue.svg
+[mypy-url]: https://mypy-lang.org/
+<!-- markdownlint-enable MD013 -->
