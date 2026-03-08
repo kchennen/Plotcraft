@@ -57,6 +57,29 @@ class GeomPoint(Geom):
         x_cat_map: dict[str, int] = scales.get("x_cat_map", {})
         color_col = aes.color or aes.fill
 
+        # ── Continuous color path ─────────────────────────────────────────────
+        if scales.get("continuous"):
+            cmap = scales["colormap"]
+            norm = scales["norm"]
+            x_values = self._resolve_x(data, aes, x_cat_map)
+            y_values = data[aes.y].to_list() if aes.y else list(range(len(data)))
+            c_values = data[color_col].to_numpy() if color_col and color_col in data.columns else None
+            scatter = ax.scatter(
+                x_values,
+                y_values,
+                s=self.size**2,
+                c=c_values,
+                cmap=cmap,
+                norm=norm,
+                alpha=self.alpha,
+                marker=self.marker,
+                zorder=3,
+                **self.kwargs,
+            )
+            ax.figure.colorbar(scatter, ax=ax, shrink=0.8)
+            return
+
+        # ── Discrete color path ───────────────────────────────────────────────
         if color_col and color_col in data.columns:
             for group_val in data[color_col].unique().sort().to_list():
                 subset = data.filter(pl.col(color_col) == group_val)

@@ -14,6 +14,7 @@ Chennen
 cividis
 cmap
 codz
+colorbar
 colormaps
 Compsognathus
 Connor
@@ -35,6 +36,7 @@ fontsize
 fontweight
 frameon
 ggsci
+hlines
 htmlcov
 icefire
 interp
@@ -53,7 +55,10 @@ millimetres
 mkdocs
 mkdocstrings
 mypy
+nanmax
+nanmin
 nejm
+nolegend
 nosetests
 okabeito
 Pachycephalosaurus
@@ -74,6 +79,7 @@ pypackages
 pypirc
 pytest
 pytype
+renderable
 ropeproject
 scipy
 scrapy
@@ -92,6 +98,8 @@ VEGFA
 Velociraptor
 venv
 viridis
+vmax
+vmin
 webassets
 xlabel
 xticklabels

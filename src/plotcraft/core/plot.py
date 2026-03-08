@@ -78,6 +78,91 @@ class PlotCraft:
             history=(*self._spec.history, "add_caption"),
         )
 
+    def add_count_bar(self, width: float = 0.7, alpha: float = 0.85, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add a bar chart showing counts per group."""
+        from plotcraft.core.aes import Aes
+        from plotcraft.core.layer import Layer
+        from plotcraft.geoms.bar import GeomBar
+        from plotcraft.positions.identity import PositionIdentity
+        from plotcraft.stats.aggregation import StatCount
+
+        layer = Layer(
+            geom=GeomBar(width=width, alpha=alpha, **kwargs),
+            stat=StatCount(),
+            position=PositionIdentity(),
+            aes_override=Aes(y="_count"),
+        )
+        new_spec = self._add_history("add_count_bar")
+        return PlotCraft(replace(new_spec, layers=(*new_spec.layers, layer)))
+
+    def add_count_dash(self, linewidth: float = 2.0, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add horizontal dashes showing counts per group."""
+        from plotcraft.core.aes import Aes
+        from plotcraft.core.layer import Layer
+        from plotcraft.geoms.bar import GeomDash
+        from plotcraft.positions.identity import PositionIdentity
+        from plotcraft.stats.aggregation import StatCount
+
+        layer = Layer(
+            geom=GeomDash(linewidth=linewidth, **kwargs),
+            stat=StatCount(),
+            position=PositionIdentity(),
+            aes_override=Aes(y="_count"),
+        )
+        new_spec = self._add_history("add_count_dash")
+        return PlotCraft(replace(new_spec, layers=(*new_spec.layers, layer)))
+
+    def add_count_dot(self, size: float = 4.0, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add dots showing counts per group."""
+        from plotcraft.core.aes import Aes
+        from plotcraft.core.layer import Layer
+        from plotcraft.geoms.point import GeomPoint
+        from plotcraft.positions.identity import PositionIdentity
+        from plotcraft.stats.aggregation import StatCount
+
+        layer = Layer(
+            geom=GeomPoint(size=size, **kwargs),
+            stat=StatCount(),
+            position=PositionIdentity(),
+            aes_override=Aes(y="_count"),
+        )
+        new_spec = self._add_history("add_count_dot")
+        return PlotCraft(replace(new_spec, layers=(*new_spec.layers, layer)))
+
+    def add_count_line(self, linewidth: float = 1.5, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add connected lines showing counts per group."""
+        from plotcraft.core.aes import Aes
+        from plotcraft.core.layer import Layer
+        from plotcraft.geoms.line import GeomLine
+        from plotcraft.positions.identity import PositionIdentity
+        from plotcraft.stats.aggregation import StatCount
+
+        layer = Layer(
+            geom=GeomLine(linewidth=linewidth, **kwargs),
+            stat=StatCount(),
+            position=PositionIdentity(),
+            aes_override=Aes(y="_count"),
+        )
+        new_spec = self._add_history("add_count_line")
+        return PlotCraft(replace(new_spec, layers=(*new_spec.layers, layer)))
+
+    def add_count_area(self, alpha: float = 0.4, **kwargs: Any) -> PlotCraft:  # noqa: ANN401
+        """Add filled area showing counts per group."""
+        from plotcraft.core.aes import Aes
+        from plotcraft.core.layer import Layer
+        from plotcraft.geoms.line import GeomArea
+        from plotcraft.positions.identity import PositionIdentity
+        from plotcraft.stats.aggregation import StatCount
+
+        layer = Layer(
+            geom=GeomArea(alpha=alpha, **kwargs),
+            stat=StatCount(),
+            position=PositionIdentity(),
+            aes_override=Aes(y="_count"),
+        )
+        new_spec = self._add_history("add_count_area")
+        return PlotCraft(replace(new_spec, layers=(*new_spec.layers, layer)))
+
     # --- adjust_* methods ---
     def adjust_colors(self, colors: ColorScheme | list[str] | dict[str, str]) -> PlotCraft:
         """Change the color palette.
