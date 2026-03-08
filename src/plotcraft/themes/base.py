@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import re
+from typing import Literal
 
 from matplotlib.axes import Axes
+from pydantic import ConfigDict, field_validator
+from pydantic.dataclasses import dataclass
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(config=ConfigDict(frozen=True))
 class Theme:
     """Visual theme controlling axes, fonts, grid, and legend appearance."""
 
@@ -15,7 +18,7 @@ class Theme:
     base_size: float = 7.0
     ink_color: str = "#000000"
     paper_color: str = "#FFFFFF"
-    legend_position: str = "right"  # "right", "left", "top", "bottom", "none"
+    legend_position: Literal["right", "left", "top", "bottom", "none"] = "right"
     legend_title: str | None = None
 
     # Panel
@@ -31,6 +34,22 @@ class Theme:
     axis_ticks_y: bool = True
     axis_labels_x: bool = True
     axis_labels_y: bool = True
+
+    @field_validator("base_size")
+    @classmethod
+    def positive_base_size(cls, v: float) -> float:
+        """Ensure base_size is strictly positive."""
+        if v <= 0:
+            raise ValueError(f"base_size must be positive, got {v}")
+        return v
+
+    @field_validator("ink_color", "paper_color", "panel_background")
+    @classmethod
+    def valid_hex_color(cls, v: str) -> str:
+        """Ensure color fields are valid 6-digit hex strings."""
+        if not re.match(r"^#[0-9a-fA-F]{6}$", v):
+            raise ValueError(f"Expected a hex color like '#RRGGBB', got '{v!r}'")
+        return v
 
     def apply(self, ax: Axes) -> None:
         """Apply this theme to a matplotlib Axes.

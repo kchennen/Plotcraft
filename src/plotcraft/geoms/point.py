@@ -34,6 +34,10 @@ class GeomPoint(Geom):
                 color scale (default True).
             **kwargs: Extra keyword arguments forwarded to ``ax.scatter``.
         """
+        if size <= 0:
+            raise ValueError(f"size must be positive, got {size}")
+        if not (0.0 <= alpha <= 1.0):
+            raise ValueError(f"alpha must be in [0, 1], got {alpha}")
         self.size = size
         self.alpha = alpha
         self.marker = marker

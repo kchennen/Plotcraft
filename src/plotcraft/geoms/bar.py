@@ -22,6 +22,10 @@ class GeomBar(Geom):
             alpha: Opacity of bars (default 0.85).
             **kwargs: Additional keyword arguments passed to ax.bar().
         """
+        if width <= 0:
+            raise ValueError(f"width must be positive, got {width}")
+        if not (0.0 <= alpha <= 1.0):
+            raise ValueError(f"alpha must be in [0, 1], got {alpha}")
         self.width = width
         self.alpha = alpha
         self.kwargs = kwargs
@@ -102,6 +106,8 @@ class GeomDash(Geom):
             linewidth: Width of dashes (default 2.0).
             **kwargs: Additional keyword arguments passed to ax.hlines().
         """
+        if linewidth <= 0:
+            raise ValueError(f"linewidth must be positive, got {linewidth}")
         self.linewidth = linewidth
         self.kwargs = kwargs
 

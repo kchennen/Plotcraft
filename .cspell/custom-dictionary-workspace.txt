@@ -5,6 +5,7 @@ Abstra
 addopts
 Allosaurus
 Ankylosaurus
+Blaireau
 bluepinkyellow
 BRAF
 BRCA
@@ -84,6 +85,7 @@ pytest
 pytype
 renderable
 ropeproject
+RRGGBB
 scipy
 scrapy
 Scrapy

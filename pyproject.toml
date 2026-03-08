@@ -6,7 +6,11 @@ readme = "README.md"
 authors = [{ name = "KChennen", email = "kchennen@unistra.fr" }]
 license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
-dependencies = ["matplotlib>=3.10.8", "polars>=1.38.1"]
+dependencies = [
+    "matplotlib>=3.10.8",
+    "polars>=1.38.1",
+    "pydantic>=2.0",
+]
 
 [build-system]
 requires = ["uv_build>=0.9.26,<0.10.0"]

@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Literal
+
+from pydantic import ConfigDict, field_validator
+from pydantic.dataclasses import dataclass
 
 from plotcraft.colors.utils import apply_saturation, interpolate_colors
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(config=ConfigDict(frozen=True))
 class ColorScheme:
     """A named collection of colors for mapping categorical/continuous data.
 
@@ -25,6 +27,22 @@ class ColorScheme:
     name: str
     colors: tuple[str, ...]
     palette_type: Literal["discrete", "continuous", "diverging"] = "discrete"
+
+    @field_validator("name")
+    @classmethod
+    def non_empty_name(cls, v: str) -> str:
+        """Ensure name is a non-empty string."""
+        if not v.strip():
+            raise ValueError("name must be a non-empty string")
+        return v
+
+    @field_validator("colors")
+    @classmethod
+    def non_empty_colors(cls, v: tuple[str, ...]) -> tuple[str, ...]:
+        """Ensure the palette contains at least one color."""
+        if not v:
+            raise ValueError("colors must contain at least one entry")
+        return v
 
     def get_colors(self, n: int) -> list[str]:
         """Get a list of n colors from the scheme.

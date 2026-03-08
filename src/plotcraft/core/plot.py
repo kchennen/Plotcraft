@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from typing import Any
+from typing import Any, Literal
 
 import matplotlib.pyplot as plt
 
@@ -157,20 +157,30 @@ class PlotCraft:
         self,
         width: float | None = None,
         height: float | None = None,
-        units: str = "mm",
+        units: Literal["mm", "cm", "in"] = "mm",
     ) -> PlotCraft:
         """Change figure dimensions.
 
         Args:
             width: Figure width in the given units.
             height: Figure height in the given units.
-            units: "mm" (default), "cm", or "in".
+            units: Unit system — "mm" (default), "cm", or "in".
+
+        Raises:
+            ValueError: If ``units`` is not one of "mm", "cm", or "in".
+            ValueError: If ``width`` or ``height`` is not positive.
         """
+        if units not in _UNIT_TO_MM:
+            raise ValueError(f"units must be 'mm', 'cm', or 'in', got '{units}'")
         scale = _UNIT_TO_MM[units]
         changes: dict[str, Any] = {}
         if width is not None:
+            if width <= 0:
+                raise ValueError(f"width must be positive, got {width}")
             changes["width_mm"] = width * scale
         if height is not None:
+            if height <= 0:
+                raise ValueError(f"height must be positive, got {height}")
             changes["height_mm"] = height * scale
         return self._evolve(**changes)
 
@@ -204,19 +214,31 @@ class PlotCraft:
         path: str,
         width: float | None = None,
         height: float | None = None,
-        units: str = "mm",
+        units: Literal["mm", "cm", "in"] = "mm",
         dpi: int = 300,
     ) -> PlotCraft:
         """Render and save the plot to a file.
 
         Returns self to enable continued chaining (e.g., saving to
         multiple formats).
+
+        Args:
+            path: Output file path (format inferred from extension).
+            width: Override figure width in the given units.
+            height: Override figure height in the given units.
+            units: Unit system — "mm" (default), "cm", or "in".
+            dpi: Resolution in dots per inch (default 300).
+
+        Raises:
+            ValueError: If ``units`` is not one of "mm", "cm", or "in".
         """
         from plotcraft.render.engine import RenderEngine
 
+        if units not in _UNIT_TO_MM:
+            raise ValueError(f"units must be 'mm', 'cm', or 'in', got '{units}'")
         spec = self._spec
         if width is not None or height is not None:
-            scale = _UNIT_TO_MM.get(units, 1.0)
+            scale = _UNIT_TO_MM[units]
             spec = replace(
                 spec,
                 width_mm=width * scale if width else spec.width_mm,

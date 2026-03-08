@@ -22,6 +22,10 @@ class GeomLine(Geom):
             alpha: Opacity of lines (default 1.0).
             **kwargs: Additional keyword arguments passed to ax.plot().
         """
+        if linewidth <= 0:
+            raise ValueError(f"linewidth must be positive, got {linewidth}")
+        if not (0.0 <= alpha <= 1.0):
+            raise ValueError(f"alpha must be in [0, 1], got {alpha}")
         self.linewidth = linewidth
         self.alpha = alpha
         self.kwargs = kwargs
@@ -96,6 +100,8 @@ class GeomArea(Geom):
             alpha: Opacity of filled area (default 0.4).
             **kwargs: Additional keyword arguments passed to ax.fill_between().
         """
+        if not (0.0 <= alpha <= 1.0):
+            raise ValueError(f"alpha must be in [0, 1], got {alpha}")
         self.alpha = alpha
         self.kwargs = kwargs
 

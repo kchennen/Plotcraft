@@ -52,3 +52,14 @@ class PlotSpec:
 
     # --- Debug ---
     history: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        """Validate field values after construction."""
+        if self.width_mm <= 0:
+            raise ValueError(f"width_mm must be positive, got {self.width_mm}")
+        if self.height_mm <= 0:
+            raise ValueError(f"height_mm must be positive, got {self.height_mm}")
+        if not (0 < self.dodge_width <= 2):
+            raise ValueError(f"dodge_width must be in (0, 2], got {self.dodge_width}")
+        if len(self.padding) != 4 or not all(0.0 <= p <= 1.0 for p in self.padding):
+            raise ValueError(f"padding must be exactly 4 floats each in [0, 1], got {self.padding}")
