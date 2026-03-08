@@ -15,6 +15,7 @@ cividis
 cmap
 codz
 colorbar
+colorbars
 colormaps
 Compsognathus
 Connor
@@ -35,6 +36,7 @@ fontfamily
 fontsize
 fontweight
 frameon
+geoms
 ggsci
 hlines
 htmlcov
@@ -60,6 +62,7 @@ nanmin
 nejm
 nolegend
 nosetests
+Okabe
 okabeito
 Pachycephalosaurus
 Parasaurolophus
@@ -94,6 +97,7 @@ spyproject
 subsamples
 testpaths
 tidyplot
+timepoint
 VEGFA
 Velociraptor
 venv
