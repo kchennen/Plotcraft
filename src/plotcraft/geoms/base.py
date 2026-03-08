@@ -90,7 +90,7 @@ class Geom(ABC):
         offset = (group_index - (n_groups - 1) / 2) * group_width
         if x_cat_map:
             return [x_cat_map[str(v)] + offset for v in x_vals]
-        return [float(v) + offset for v in x_vals]  # type: ignore[arg-type]
+        return [float(v) + offset for v in x_vals]
 
     @staticmethod
     def _apply_x_ticks(

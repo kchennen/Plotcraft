@@ -50,6 +50,7 @@ class GeomBar(Geom):
         x_cat_map: dict[str, int] = scales.get("x_cat_map", {})
         color_col = aes.color or aes.fill
         y_col = aes.y or "_count"
+        x_pos: list[Any]
 
         if color_col and color_col in data.columns:
             groups = data[color_col].unique().sort().to_list()
@@ -129,6 +130,7 @@ class GeomDash(Geom):
         color_col = aes.color or aes.fill
         y_col = aes.y or "_count"
         dash_width = 0.3
+        x_pos: list[Any]
 
         if color_col and color_col in data.columns:
             groups = data[color_col].unique().sort().to_list()
