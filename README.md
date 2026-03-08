@@ -23,6 +23,7 @@
 [![Ruff](https://img.shields.io/badge/code%20style-ruff-000000?style=flat-square&logo=python)](https://github.com/astral-sh/ruff)
 [![GitHub issues](https://img.shields.io/github/issues/kchennen/Plotcraft?style=flat-square&logo=github)](https://github.com/kchennen/Plotcraft/issues)
 
+[![Report a bug](https://img.shields.io/badge/🐛%20Report%20a%20bug-red?style=flat-square)](https://github.com/kchennen/Plotcraft/issues)
 </div>
 <!-- markdownlint-enable MD013 MD033 MD041 -->
 
@@ -104,128 +105,6 @@ fig, ax = (
 
 ---
 
-## API Overview
-
-### Entry point
-
-```python
-pc.plotcraft(data, x=..., y=..., color=..., fill=...)
-```
-
-### Chart layers
-
-| Method | Description |
-|---|---|
-| `.add_data_points(size, alpha)` | Scatter plot of individual data points |
-| `.add_count_bar(width, alpha)` | Vertical bars showing counts per group |
-| `.add_count_line(linewidth)` | Connected lines showing counts per group |
-| `.add_count_area(alpha)` | Filled area showing counts per group |
-| `.add_count_dot(size)` | Dots at count values per group |
-| `.add_count_dash(linewidth)` | Horizontal dashes at count values per group |
-
-### Annotations & adjustments
-
-| Method | Description |
-|---|---|
-| `.add_title(title)` | Set the plot title |
-| `.add_caption(caption)` | Add a caption below the plot |
-| `.adjust_colors(palette)` | Apply a color palette (ColorScheme, list, or dict) |
-| `.adjust_size(width, height, units)` | Set figure dimensions (`"mm"`, `"cm"`, `"in"`) |
-| `.remove_legend()` | Hide the legend |
-| `.remove_x_axis_title()` | Remove the x-axis label |
-| `.remove_y_axis_title()` | Remove the y-axis label |
-
-### Terminal methods
-
-| Method | Returns | Description |
-|---|---|---|
-| `.render()` | `(Figure, Axes)` | Render and return matplotlib objects |
-| `.save_plot(path, dpi=300)` | `PlotCraft` | Save to file (chainable) |
-| `.view_plot()` | `PlotCraft` | Display interactively (chainable) |
-
----
-
-## Color Palettes
-
-Plotcraft ships with 40+ palettes in four categories.
-
-### Journal palettes
-
-Designed to match the color schemes of major scientific journals.
-
-```python
-pc.colors_journal_npg    # Nature Publishing Group
-pc.colors_journal_aaas   # Science / AAAS
-pc.colors_journal_jama   # JAMA
-pc.colors_journal_lancet # The Lancet
-pc.colors_journal_nejm   # New England Journal of Medicine
-pc.colors_journal_d3     # D3.js category10
-pc.colors_journal_igv    # IGV genome browser
-```
-
-### Discrete palettes
-
-Colorblind-friendly and general-purpose categorical palettes.
-
-```python
-pc.colors_discrete_okabeito      # Okabe & Ito (colorblind-safe)
-pc.colors_discrete_wong          # Wong (colorblind-safe)
-pc.colors_discrete_ibm           # IBM Design (colorblind-safe)
-pc.colors_discrete_tableau10     # Tableau 10
-pc.colors_discrete_tol_vibrant   # Paul Tol vibrant
-pc.colors_discrete_tol_muted     # Paul Tol muted
-# ... and more
-```
-
-### Continuous palettes
-
-For mapping numeric values to color gradients.
-
-```python
-pc.colors_continuous_viridis
-pc.colors_continuous_plasma
-pc.colors_continuous_magma
-pc.colors_continuous_inferno
-pc.colors_continuous_cividis
-# ... and more
-```
-
-### Diverging palettes
-
-For data that diverges around a meaningful midpoint.
-
-```python
-pc.colors_diverging_blue2red
-pc.colors_diverging_spectral
-pc.colors_diverging_BuRd
-# ... and more
-```
-
-### Palette modifiers
-
-```python
-palette = pc.colors_journal_npg
-palette.with_saturation(0.4)   # desaturate
-palette.reversed()             # reverse order
-
-# Create a custom palette
-my_palette = pc.new_color_scheme("brand", ["#E63946", "#457B9D", "#1D3557"])
-```
-
----
-
-## Bundled Datasets
-
-```python
-pc.list_datasets()
-# ['animals', 'climate', 'dinosaurs', 'distributions', 'energy',
-#  'eu_countries', 'gene_expression', 'pca', 'spendings', 'study', 'time_course']
-
-df = pc.load_dataset("gene_expression")
-```
-
----
-
 ## Development
 
 ```bash
@@ -272,6 +151,4 @@ src/plotcraft/
 
 ---
 
-## License
-
-Apache 2.0 — see [LICENSE](LICENSE) for details.
+Built with ❤️ for your pleasure and our leisure by the 🦡 **Blaireau Company**
